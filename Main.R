@@ -4,10 +4,10 @@
 ############################################################################################################
 ############################################################################################################
 #setting wd
-Fusion_Folder <-  "D:/RS1_2_Fusion"  #setwd(choose.dir())
+Fusion_Folder <-  "D:/FUSION2020"  #setwd(choose.dir())
 dir.create(paste0(Fusion_Folder,"/Fusion_Output"), showWarnings = FALSE)
 setwd(paste0(Fusion_Folder,"/Fusion_Output"))
-Archive_Folder <- paste0(Fusion_Folder,"/Fusion_Output")
+#Archive_Folder <- paste0(Fusion_Folder,"/Fusion_Output")
 
 ###install packages
 ipak <- function(pkg){
@@ -144,7 +144,7 @@ Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 ########################################################################################
 
 Match_df <- as.data.frame(Sentinel_1_filteredD_F$ingestiondate)
-Match_df$Sent_2_Date <- Sentinel_1_filteredD_F$ingestiondate
+Match_df$Sent_2_Date <- Sentinel_2_filteredD_F$ingestiondate
 names(Match_df) <- c("S1_Date","S2_Date")
 
 ########################################################################################
@@ -155,16 +155,20 @@ names(Match_df) <- c("S1_Date","S2_Date")
 #datasets <- getSentinel_data(records =  Sentinel_2[unique(Final_S2_ID), ])
 #datasets <- getSentinel_data(records =  Sentinel_1[unique(Final_S1_ID), ])
 
-datasets <- getSentinel_data(records =  Sentinel_2[Final_S2_ID[1], ], dir_out = getwd())
-datasets <- getSentinel_data(records =  Sentinel_1[Final_S1_ID[1], ], dir_out = getwd())
+if(file.exists(paste0(Sentinel_2[Final_S2_ID[1], ]$title,".zip")) == FALSE){
+  datasetsS2 <- getSentinel_data(records =  Sentinel_2[Final_S2_ID[1], ], dir_out = getwd())
+}
 
+if(file.exists(paste0(Sentinel_1[Final_S1_ID[1], ]$title,".zip")) == FALSE){
+  datasetsS1 <- getSentinel_data(records =  Sentinel_1[Final_S1_ID[1], ], dir_out = getwd())
+}
 
 #datasets <- getSentinel_data(records = records_filtered[c(4,7,9), ])
 
 ## Finally, define an output format and make them ready-to-use
-datasets_prep <- prepSentinel(datasets, format = "tiff")
+datasets_prep_s2 <- prepSentinel(datasetsS2, format = "tiff", dir_out = getwd())
 # or use VRT to not store duplicates of different formats
-datasets_prep <- prepSentinel(datasets, format = "vrt")
+datasets_prep_s1 <- prepSentinel(datasetsS1, format = "vrt", dir_out = getwd())
 
 ## View the files
 datasets_prep[[1]][[1]][1] #first dataset, first tile, 10 m resolution
@@ -214,10 +218,21 @@ s1
 ###Load S2 Bands
 ### choose manually wd from s2  img
 #setwd(choose.dir())
-setwd("D:/RS1_2_Fusion/jp2_2")
 
+#Unzip S2 images
+
+
+setwd("D:/FUSION2020/Fusion_Output/S2")
 ###check crs
-s2a <- readGDAL("T32UNA_20190619T103031_B01.tif")
+
+S2_Bands <- list.files(getwd())
+
+s2a <- readGDAL(S2_Bands[1])
+
+
+
+################################################################ 
+################################################################ FROM JP2 2 tiff
 
 ### set path
 jp2_path <-"D:/RS1_2_Fusion/jp2_2/" #setwd(choose.dir())
@@ -270,6 +285,11 @@ rlist <- paste0(grep("*.tif*", list.files(path = getwd(), pattern="*.tif$", full
 Rst_Stk <- lapply(rlist,raster)
 
 crs(Rst_Stk[[2]]) <- CRS(crs_s2)
+
+################################################################ 
+################################################################ 
+
+
 
 
 ##crop to s1 extent
