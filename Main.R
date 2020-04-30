@@ -194,6 +194,7 @@ library(processx)
 preprocessing(sourcePath = "D:/RS1_2_Fusion/Fusion_Output/get_data/Sentinel-1",
               wd = "D:/RS1_2_Fusion/Fusion_Output/Sentinel_1_Prep",
               pixelSpacingInMeter=10,
+              windowSize= "5x5",
               geoRegion = "9.776839256286621 49.75139617919922, 10.520546913146973 49.75139617919922, 10.520546913146973 48.97669982910156, 9.776839256286621 48.97669982910156, 9.776839256286621 49.75139617919922")
 
 ### Polygon example
@@ -352,5 +353,5 @@ plot(RGB_band2_s2)
 
 
 
-
+...in progress^^
 
