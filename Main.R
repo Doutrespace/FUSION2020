@@ -17,7 +17,7 @@ ipak <- function(pkg){
   sapply(pkg, require, character.only = TRUE)
 }
 # usage
-packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","dplyr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview", "mapedit","stringr")
+packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","dplyr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview", "mapedit","stringr","rgeos")
 ipak(packages)
 
 ###call set_aoi() without argument, which opens a mapedit editor:
@@ -178,25 +178,24 @@ Final_S2_ID <- Sentinel_1_filtered$ID
 
 ###
 for(i in 1:length(Sentinel_1_filtered$ingestiondate)){
-  
   date <- as.Date(Sentinel_1_filtered$ingestiondate[i])
-  
   Final_S2_ID[i] <-  Sentinel_2_filtered$ID[which.min(abs(date - as.Date(Sentinel_2_filtered$ingestiondate)))]
-  
-  
 }
 
 Sentinel_1 <- Sentinel_1[Final_S1_ID,]
-
 Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 
 ######################################################################################## 
 ###########################Match Dataframe##############################################
 ########################################################################################
 
-Match_df <- as.data.frame(Sentinel_1_filtered$ingestiondate)
-Match_df$Sent_2_Date <- Sentinel_2_filtered$ingestiondate
-names(Match_df) <- c("S1_Date","S2_Date")
+Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
+Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
+Match_df$S2_ID <- as.integer(Final_S2_ID)
+Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID,6],1,10))
+names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
+Match_df$S1_ID <- as.integer(Final_S1_ID)
+Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
 
 ########################################################################################
 ################################### Download the Data ##################################
@@ -206,8 +205,12 @@ names(Match_df) <- c("S1_Date","S2_Date")
 #datasets <- getSentinel_data(records =  Sentinel_2[unique(Final_S2_ID), ])
 #datasets <- getSentinel_data(records =  Sentinel_1[unique(Final_S1_ID), ])
 
-datasets <- getSentinel_data(records =  Sentinel_2[Final_S2_ID[1], ], dir_out = getwd())
-datasets <- getSentinel_data(records =  Sentinel_1[Final_S1_ID[1], ], dir_out = getwd())
+DownloadList <- c(5)
+
+datasets <- getSentinel_data(records =  Sentinel_1[row.names(Sentinel_1) == Match_df$S1_ID[DownloadList],] , dir_out = Archive_Folder)
+datasets <- getSentinel_data(records =  Sentinel_2[row.names(Sentinel_2) == Match_df$S2_ID[DownloadList],] , dir_out = Archive_Folder)
+
+
 
 
 #datasets <- getSentinel_data(records = records_filtered[c(4,7,9), ])
