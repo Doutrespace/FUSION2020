@@ -8,7 +8,7 @@ Fusion_Folder <-  "D:/RS1_2_Fusion"  #setwd(choose.dir())
 dir.create(paste0(Fusion_Folder,"/Fusion_Output"), showWarnings = FALSE)
 setwd(paste0(Fusion_Folder,"/Fusion_Output"))
 Archive_Folder <- paste0(Fusion_Folder,"/Fusion_Output")
-
+ 
 ###install packages
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
