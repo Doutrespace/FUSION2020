@@ -4,7 +4,7 @@
 ############################################################################################################
 ############################################################################################################
 #setting wd
-Fusion_Folder <-  "D:/RS1_2_Fusion"  #setwd(choose.dir())
+Fusion_Folder <-  "D:/FUSION2020"  #setwd(choose.dir())
 dir.create(paste0(Fusion_Folder,"/Fusion_Output"), showWarnings = FALSE)
 setwd(paste0(Fusion_Folder,"/Fusion_Output"))
 Archive_Folder <- paste0(Fusion_Folder,"/Fusion_Output")
@@ -189,6 +189,8 @@ Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 ###########################Match Dataframe##############################################
 ########################################################################################
 
+# check first the grather dataframe
+
 Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
 Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
 Match_df$S2_ID <- as.integer(Final_S2_ID)
@@ -205,12 +207,10 @@ Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c
 #datasets <- getSentinel_data(records =  Sentinel_2[unique(Final_S2_ID), ])
 #datasets <- getSentinel_data(records =  Sentinel_1[unique(Final_S1_ID), ])
 
-DownloadList <- c(5)
+DownloadList <- c(1)
 
 datasets <- getSentinel_data(records =  Sentinel_1[row.names(Sentinel_1) == Match_df$S1_ID[DownloadList],] , dir_out = Archive_Folder)
 datasets <- getSentinel_data(records =  Sentinel_2[row.names(Sentinel_2) == Match_df$S2_ID[DownloadList],] , dir_out = Archive_Folder)
-
-
 
 
 #datasets <- getSentinel_data(records = records_filtered[c(4,7,9), ])
