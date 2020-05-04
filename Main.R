@@ -189,8 +189,7 @@ Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 ###########################Match Dataframe##############################################
 ########################################################################################
 
-# check first the grather dataframe
-
+# Build match dataframe to construct the GUI
 Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
 Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
 Match_df$S2_ID <- as.integer(Final_S2_ID)
@@ -198,6 +197,30 @@ Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID,6],1,10))
 names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
 Match_df$S1_ID <- as.integer(Final_S1_ID)
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
+
+install.packages("installr")
+library(installr)
+
+# Check unique dates in case there is only one image available 
+Checker <- function(S1_ID, S2_ID){
+  if(length(unique(S1_ID))<= 1 | length(unique(S2_ID))<=1 ){
+    if(ask.user.yn.question(" In your data S1 imagery has only one date
+                              available, to have better results you can
+                              apply 5 DateDiff filter, Do you want to do
+                              it?")){
+      # Here a "DATE" filter can be made! (if DateDiff <= 5 days then delete row)
+      Match_df <<- subset(Match_df, DateDiff <= 5)
+      print("Filter applied")} else{
+      print("Filter not applied")
+      }
+  }  else{
+    print("ALLES GUT")
+  }
+}
+
+
+Checker(Final_S1_ID,Final_S2_ID)
+
 
 ########################################################################################
 ################################### Download the Data ##################################
