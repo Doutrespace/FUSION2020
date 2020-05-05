@@ -3,6 +3,8 @@
 ##################################### S1&S2_Fusion #########################################################
 ############################################################################################################
 ############################################################################################################
+uninstall.packages("rlang")
+
 #setting wd
 Fusion_Folder <-  "D:/FUSION2020"  #setwd(choose.dir())
 dir.create(paste0(Fusion_Folder,"/Fusion_Output"), showWarnings = FALSE)
@@ -17,7 +19,9 @@ ipak <- function(pkg){
   sapply(pkg, require, character.only = TRUE)
 }
 # usage
-packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","dplyr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview", "mapedit","stringr","rgeos")
+packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
+              "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
+              "mapedit","stringr","rgeos","officer","shiny","flextable","maps","mapproj","ggplot2")
 ipak(packages)
 
 ###call set_aoi() without argument, which opens a mapedit editor:
@@ -74,43 +78,6 @@ rownames(Sentinel_1_filtered) <- NULL
 rownames(Sentinel_2_filtered) <- NULL
 
 ### Unique S1 date Images based on high ovelap with the AOI
-MFPF <- function(MultiPol_Char, graph=FALSE){
-  Tmp <- str_remove_all(MultiPol_Char, "[()MULTIPOLYGON]")
-  Tmp <- strsplit(Tmp,",")
-  Tmp <- strsplit(Tmp[[1]]," ")
-  df <- data.frame(Long=double(),Lat=double()) 
-  
-  for(i in 1:5){
-    if(length(Tmp[[i]]) > 2){
-      Tmp[[i]][Tmp[[i]][] %in% c("")] <- NA
-      Tmp[[i]] <- na.omit(Tmp[[i]])}
-    df[i,1] <- Tmp[[i]][1]
-    df[i,2] <- Tmp[[i]][2]
-  }
-  
-  df <- data.matrix(df, rownames.force = NA)
-  df <- Polygon(df)
-  df <- Polygons(c(df), "df")
-  df <- SpatialPolygons(c(df), c(1:1), proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs"))
-  
-  Intersection <- raster::intersect(area, df)
-  
-  overlap <- (area(Intersection)*100)/(area(area))
-  
-  if(graph == TRUE){
-    plot(df)
-    plot(area, add=TRUE)
-    ## google
-  }
-  
-  return(overlap)
-  
-}
-
-Sentinel_1_filtered$Overlap <- 0
-
-Sentinel_1_filtered$Overlap <- sapply(Sentinel_1_filtered$footprint, function(x) MFPF(x))
-
 Dupl_S1Dates <- Sentinel_1_filtered[duplicated(Sentinel_1_filtered$ingestiondate),5]
 
 if(length(Dupl_S1Dates)> 0){
@@ -185,6 +152,76 @@ for(i in 1:length(Sentinel_1_filtered$ingestiondate)){
 Sentinel_1 <- Sentinel_1[Final_S1_ID,]
 Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 
+
+
+#Sentinel_1_filtered$Overlap <- 0
+#Sentinel_1_filtered$Overlap <- sapply(Sentinel_1_filtered$footprint, function(x) MFPF(x))
+
+#Match_df$S2Ov <- sapply(Sentinel_2$footprint[Match_df$S2_ID], function(x) MFPF(x))
+
+
+
+
+######################################################################################## 
+#########################  CHAR2POL FUNCTION  ##########################################
+########################################################################################
+
+Char2Pol <- function(MultiPol_Char, plot=FALSE){
+  MP_Test <- MultiPol_Char
+  MP_Test <- str_remove_all(MP_Test, "[()MULTIPOLYGON]")
+  MP_Test <- strsplit(MP_Test,",")
+  MP_Test <- strsplit(MP_Test[[1]]," ")
+  
+  PolDataFrame <- data.frame(Lat = double(),
+                             Lon = double(), 
+                             stringsAsFactors=FALSE) 
+  
+  for(i in 1:length(MP_Test)){
+    MP_Test[[i]]<- MP_Test[[i]][!(MP_Test[[i]][] %in% c(""))]
+    PolDataFrame[i,1] <- MP_Test[[i]][1]
+    PolDataFrame[i,2] <- MP_Test[[i]][2]
+  }
+  
+  
+  PolDataFrame <- data.matrix(PolDataFrame[], rownames.force = NA)
+  PolDataFrame <- Polygon(PolDataFrame)
+  PolDataFrame <- Polygons(c(PolDataFrame), "PolDataFrame")
+  PolDataFrame <- SpatialPolygons(c(PolDataFrame), c(1:1), proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs"))
+  
+  if(plot == TRUE){
+    mapview(PolDataFrame)
+  }
+  
+  return(PolDataFrame)
+  
+}
+
+######################################################################################## 
+############################  PolOv FUNCTION  ##########################################
+########################################################################################
+
+PolOv <- function(S1_Pol, S2_Pol, Aoi){
+  
+  Int_S1S2 <- raster::intersect(S1_Pol, S2_Pol)
+  Int_S1A <-  raster::intersect(S1_Pol, Aoi)
+  Int_S2A <-  raster::intersect(S2_Pol, Aoi)
+  Int_all <-  raster::intersect(Int_S1S2, Aoi)
+  
+  overlap_S1S2 <- (area(Int_S1S2)*100)/(area(S1_Pol))
+  overlap_S1A <- (area(Int_S1A)*100)/(area(Aoi))
+  overlap_S2A <- (area(Int_S2A)*100)/(area(Aoi))
+  overlap_all <- (area(Int_all)*100)/(area(Aoi))
+  
+  Data <- c(overlap_S1S2,overlap_S1A,overlap_S2A,overlap_all)
+  
+  All_Pol <- do.call(bind, list(S1_Pol, S2_Pol, Aoi)) 
+  
+  mapview(All_Pol)
+  
+  return(Data)
+  
+}
+
 ######################################################################################## 
 ###########################Match Dataframe##############################################
 ########################################################################################
@@ -198,15 +235,95 @@ names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
 Match_df$S1_ID <- as.integer(Final_S1_ID)
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
 
-install.packages("installr")
-library(installr)
+Match_df$S1S2D <- 0
+Match_df$S1AD <- 0
+Match_df$S2AD <- 0
+Match_df$AllD <- 0
+
+#---------------> INCEPTION <------------------------------------
+for(i in 1: length(Match_df$S1_ID)){
+  TempData <- PolOv(Char2Pol(Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)]),
+                    Char2Pol(Sentinel_2$footprint[Match_df$S2_ID[i] == row.names(Sentinel_2)]),
+                    area)
+  
+  Match_df$S1S2D[i]  <- TempData[1]
+  Match_df$S1AD[i] <- TempData[2]
+  Match_df$S2AD[i] <- TempData[3]
+  Match_df$AllD[i] <- TempData[4]
+  
+}
+
+Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)]
+
+TempData <- PolOv(Char2Pol(Sentinel_1$footprint[row.names(Sentinel_1) == Match_df$S1_ID[1]]),
+                  Char2Pol(Sentinel_2$footprint[row.names(Sentinel_2) == Match_df$S2_ID[1]]),
+                  area)
+
+TempData[2]
+  
+
+Sentinel_1$footprint[row.names(Sentinel_1) == Match_df$S1_ID]
+
+row.names(Sentinel_1)
+
+Match_df$S1_ID
+
+
+Final@plotOrder
+#######################
+
+
+
+
+
+
+
+
+
+                    
+###############
+  
+  str_remove_all(MP_Test, "[()MULTIPOLYGON]")
+
+
+Tmp <- strsplit(Tmp,",")
+Tmp <- strsplit(Tmp[[1]]," ")
+df <- data.frame(Long=double(),Lat=double()) 
+
+
+
+########
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class(Sentinel_2$footprint[Match_df$S2_ID == rownames(Sentinel_2)])
+
+
+
+Sentinel_2$footprint[rownames(Sentinel_2) == Final_S2_ID]
+
+
+
+
 
 # Check unique dates in case there is only one image available 
 Checker <- function(S1_ID, S2_ID){
   if(length(unique(S1_ID))<= 1 | length(unique(S2_ID))<=1 ){
-    if(ask.user.yn.question(" In your data S1 imagery has only one date
-                              available, to have better results you can
-                              apply 5 DateDiff filter, Do you want to do
+    if(ask.user.yn.question(" There is only one S1 imagery with the given criteria
+                              available, to have better results you are able to
+                              apply 5 DateDiff filter. Do you want to do
                               it?")){
       # Here a "DATE" filter can be made! (if DateDiff <= 5 days then delete row)
       Match_df <<- subset(Match_df, DateDiff <= 5)
@@ -214,13 +331,46 @@ Checker <- function(S1_ID, S2_ID){
       print("Filter not applied")
       }
   }  else{
-    print("ALLES GUT")
+    print("Well Done")
   }
 }
 
 
 Checker(Final_S1_ID,Final_S2_ID)
+########################################################################################
+########################################################################################
+ui <- fluidPage(
+  titlePanel("censusVis"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Choose Time Difference"),
+      
+      selectInput("var", 
+                  label = "Choose a variable to display",
+                  choices = c("Percent White", "Percent Black",
+                              "Percent Hispanic", "Percent Asian"),
+                  selected = "Percent White"),
+      
+      sliderInput("range", 
+                  label = "Range of interest:",
+                  min = 0, max = 100, value = c(0, 100))
+    ),
+    
+    mainPanel(plotOutput("map"))
+  )
+)
 
+# Server logic ----
+
+server <- function(input, output){
+  output$map <- renderPlot({
+    percent_map( # some arguments )
+  })
+}
+
+# Run app ----
+shinyApp(ui, server)
 
 ########################################################################################
 ################################### Download the Data ##################################
@@ -239,7 +389,7 @@ datasets <- getSentinel_data(records =  Sentinel_2[row.names(Sentinel_2) == Matc
 #datasets <- getSentinel_data(records = records_filtered[c(4,7,9), ])
 
 ## Finally, define an output format and make them ready-to-use
-datasets_prep <- prepSentinel(datasets, format = "tiff")
+datasets <- prepSentinel(datasets, format = "tiff", dir_out = Archive_Folder)
 # or use VRT to not store duplicates of different formats
 datasets_prep <- prepSentinel(datasets, format = "vrt")
 
@@ -259,19 +409,18 @@ r <- stack(datasets_prep[[1]][[1]][1])
 ######################################Preprocessing S1########################################
 ##############################################################################################
 #(Kemeng </3)
+
+
+
+ext_s1 <- extent(area)
+extent(area)
+
 devtools::install_github("https://github.com/Shirobakaidou/rSNAP")
-install.packages("stringi")
-library(stringi)
-library(rSNAP)
-library(processx)
-preprocessing(sourcePath = "D:/RS1_2_Fusion/Fusion_Output/get_data/Sentinel-1",
+
+preprocessing(sourcePath = "D:/FUSION2020/Fusion_Output",
               wd = "D:/RS1_2_Fusion/Fusion_Output/Sentinel_1_Prep",
               pixelSpacingInMeter=10,
               geoRegion = "9.776839256286621 49.75139617919922, 10.520546913146973 49.75139617919922, 10.520546913146973 48.97669982910156, 9.776839256286621 48.97669982910156, 9.776839256286621 49.75139617919922")
-
-### Polygon example
-#POLYGON ((9.776839256286621 49.75139617919922, 10.520546913146973 49.75139617919922, 10.520546913146973 48.97669982910156, 9.776839256286621 48.97669982910156, 9.776839256286621 49.75139617919922, 9.776839256286621 49.75139617919922))</
-
 
 s1 <- raster("D:/RS1_2_Fusion/Fusion_Output/Sentinel_1_Prep/Output/1_S1B_IW_GRDH_1SDV_20190619.tif")
 
@@ -458,7 +607,6 @@ r <- stack(datasets_prep[[1]][[1]][1])
 ##############################################################################################
 #(Kemeng </3)
 devtools::install_github("https://github.com/Shirobakaidou/rSNAP")
-install.packages("stringi")
 library(stringi)
 library(rSNAP)
 library(processx)
