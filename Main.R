@@ -6,11 +6,18 @@
 uninstall.packages("rlang")
 
 #setting wd
-Fusion_Folder <-  getwd() # "D:/FUSION2020"  #setwd(choose.dir())
+#Antonio
+Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020/Fusion_Output/Fusion_Output"
+#Nils
+#Fusion_Folder <- "D:/FUSION2020" 
+
+### Import Functions from Function.R File
+source("Functions.R")
+
 dir.create(paste0(Fusion_Folder,"/Fusion_Output"), showWarnings = FALSE)
 setwd(paste0(Fusion_Folder,"/Fusion_Output"))
 Archive_Folder <- paste0(Fusion_Folder,"/Fusion_Output")
- 
+
 ###install packages
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
@@ -23,9 +30,6 @@ packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","p
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
               "mapedit","stringr","rgeos","officer","shiny","flextable","maps","mapproj","ggplot2")
 ipak(packages)
-
-### Import Functions from Function.R File
-source("Functions.R")
 
 ###call set_aoi() without argument, which opens a mapedit editor:
 area <- mapview(editMap())
