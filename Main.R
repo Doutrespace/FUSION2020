@@ -179,9 +179,10 @@ Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
 Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
 Match_df$S2_ID <- as.integer(Final_S2_ID)
-Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID,6],1,10))
+Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID, 9],1,10))
 names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
 Match_df$S1_ID <- as.integer(Final_S1_ID)
+
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
 
 Match_df$S1S2D <- 0
