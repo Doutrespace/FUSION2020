@@ -35,7 +35,6 @@ packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","p
 ipak(packages)
 
 
-
 ###call set_aoi() without argument, which opens a mapedit editor:
 area <- mapview(editMap())
 area <- area@object[[1]][[1]][[1]]
