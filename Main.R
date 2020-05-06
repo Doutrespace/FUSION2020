@@ -3,7 +3,9 @@
 ##################################### S1&S2_Fusion #########################################################
 ############################################################################################################
 ############################################################################################################
-uninstall.packages("rlang")
+#install.packages("rlang")
+#library(rlang)
+#devtools::install_github("16EAGLE/getSpatialData")
 
 #setting wd
 #Antonio
@@ -25,11 +27,14 @@ ipak <- function(pkg){
     install.packages(new.pkg, dependencies = TRUE)
   sapply(pkg, require, character.only = TRUE)
 }
+
 # usage
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
               "mapedit","stringr","rgeos","officer","shiny","flextable","maps","mapproj","ggplot2")
 ipak(packages)
+
+
 
 ###call set_aoi() without argument, which opens a mapedit editor:
 area <- mapview(editMap())
