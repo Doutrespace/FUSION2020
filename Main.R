@@ -1,17 +1,10 @@
 ############################################################################################################
 ##################################### S1&S2_Fusion #########################################################
-
-
-
-
-
+# Code made by: Nils Karges (s338495)
+# Email: nils.karges@stud-mail.uni-wuerzburg.de
 ############################################################################################################
 ############################################################################################################
-#install.packages("rlang")
-#library(rlang)
 #devtools::install_github("16EAGLE/getSpatialData")
-
-#setting wd
 #Antonio
 #Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 #Nils
@@ -35,7 +28,7 @@ ipak <- function(pkg){
 # usage
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
-              "mapedit","stringr","rgeos","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs")
+              "mapedit","stringr","rgeos","rlang","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs")
 ipak(packages)
 
 
@@ -70,7 +63,7 @@ unique(Sentinel_2$processinglevel)
 
 Sentinel_2_filtered <- Sentinel_2[which(Sentinel_2$processinglevel == "Level-2A"),] #filter by Level
 Sentinel_2_filtered <- Sentinel_2_filtered[as.numeric(Sentinel_2_filtered$cloudcoverpercentage) <= 30, ] #filter by clouds
-Sentinel_1_filtered <- Sentinel_1[which(Sentinel_1$producttype == "GRD"),]
+Sentinel_1_filtered <- Sentinel_1[which(Sentinel_1$producttype == "GRD"),] #format
 
 ########################################################################################
 ############################   Find the Fusion pairs   #################################
@@ -111,7 +104,7 @@ for(i in 1:length(List_Date_S2)){
   ### produces temporal index
   Temporal_Index <- which(Temporal_Min == Sentinel_2_filtered$cloudcoverpercentage[Tem_List], arr.ind=T)
   
-  ### index PROPER COMMENT NEEDED11111111111
+  ### index ###############################?
   #Index <- Temporal_Index[[1]][1]
   Index <- Temporal_Index
   
