@@ -9,9 +9,9 @@
 
 #setting wd
 #Antonio
-#Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020/Fusion_Output/Fusion_Output"
+Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 #Nils
-Fusion_Folder <- "D:/FUSION2020" 
+#Fusion_Folder <- "D:/FUSION2020" 
 setwd(Fusion_Folder)
 ### Import Functions from Function.R File
 source("Functions.R")
@@ -31,7 +31,7 @@ ipak <- function(pkg){
 # usage
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
-              "mapedit","stringr","rgeos","officer","shiny","flextable","maps","mapproj","ggplot2")
+              "mapedit","stringr","rgeos","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs")
 ipak(packages)
 
 
@@ -199,6 +199,7 @@ Match_df$AllD <- 0
 
 #---------------> INCEPTION <------------------------------------
 for(i in 1: length(Match_df$S1_ID)){
+  
   TempData <- PolOv(Char2Pol(Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)]),
                     Char2Pol(Sentinel_2$footprint[Match_df$S2_ID[i] == row.names(Sentinel_2)]),
                     area)
@@ -209,6 +210,13 @@ for(i in 1: length(Match_df$S1_ID)){
   Match_df$AllD[i] <- TempData[4]
   
 }
+
+
+######################################################################################## 
+########################################################################################
+######################################################################################## 
+########################################################################################
+########################################################################################
 
 Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)]
 
@@ -229,6 +237,7 @@ Match_df$S1_ID
 #Final@plotOrder
 #######################
 
+<<<<<<< HEAD
 ###############
   
 str_remove_all(MP_Test, "[()MULTIPOLYGON]")
@@ -251,6 +260,8 @@ df <- data.frame(Long=double(),Lat=double())
 
 
 
+=======
+>>>>>>> b1535583bffd9e0a4e67f4f0e8ee48563f5e05b8
 
 
 
@@ -275,7 +286,7 @@ Checker <- function(S1_ID, S2_ID){
                               it?")){
       # Here a "DATE" filter can be made! (if DateDiff <= 5 days then delete row)
       Match_df <<- subset(Match_df, DateDiff <= 5)
-      print("Filter applied")} else{
+      print("Filter applied")} else{|
       print("Filter not applied")
       }
   }  else{
