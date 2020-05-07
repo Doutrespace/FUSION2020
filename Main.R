@@ -9,10 +9,10 @@
 
 #setting wd
 #Antonio
-Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020/Fusion_Output/Fusion_Output"
+#Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020/Fusion_Output/Fusion_Output"
 #Nils
-#Fusion_Folder <- "D:/FUSION2020" 
-
+Fusion_Folder <- "D:/FUSION2020" 
+setwd(Fusion_Folder)
 ### Import Functions from Function.R File
 source("Functions.R")
 
@@ -91,19 +91,23 @@ rownames(Sentinel_2_filtered) <- NULL
 ### Unique S1 date Images based on high ovelap with the AOI
 Dupl_S1Dates <- Sentinel_1_filtered[duplicated(Sentinel_1_filtered$ingestiondate),5]
 
-if(length(Dupl_S1Dates)> 0){
-  NewDF <- Sentinel_1_filtered[Sentinel_1_filtered$ingestiondate %in% Dupl_S1Dates,]
+
+# PROBLEM, DO WE NEED TO FILTER HERE? Sentinel_1_filtered has no -> "overlap field" ################################ smth to think
+
+#if(length(Dupl_S1Dates)> 0){
   
-  NewDF$Overlap <- format(round(NewDF$Overlap, 5), nsmall = 5)
+#  NewDF <- Sentinel_1_filtered[Sentinel_1_filtered$ingestiondate %in% Dupl_S1Dates,]
   
-  for(i in 1:length(Dupl_S1Dates)){
-    Dupl_S1Dates[i]  <- rownames(NewDF[NewDF$Overlap == min(NewDF[Dupl_S1Dates[i] == NewDF$ingestiondate[],9]) ,])
-  }
+# NewDF$Overlap <- format(round(NewDF$Overlap, 5), nsmall = 5)
   
-  Sentinel_1_filtered <- Sentinel_1_filtered[!(row.names(Sentinel_1_filtered) %in% Dupl_S1Dates), ]
+#  for(i in 1:length(Dupl_S1Dates)){
+#    Dupl_S1Dates[i]  <- rownames(NewDF[NewDF$Overlap == min(NewDF[Dupl_S1Dates[i] == NewDF$ingestiondate[],9]) ,])
+#  }
   
-  rm(NewDF,Dupl_S1Dates)
-}
+#  Sentinel_1_filtered <- Sentinel_1_filtered[!(row.names(Sentinel_1_filtered) %in% Dupl_S1Dates), ]
+  
+#  rm(NewDF,Dupl_S1Dates)
+#}
 
 ### Make a list of unique S2 Dates 
 List_Date_S2 <- unique(Sentinel_2_filtered$ingestiondate)
@@ -179,7 +183,10 @@ Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
 Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
 Match_df$S2_ID <- as.integer(Final_S2_ID)
-Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID, 9],1,10))
+
+#-> 8 has to be replaced to match the col name "ingestiondate", in my case is 9 thats why! ################################ smth to solve
+Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID, 8],1,10))
+
 names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
 Match_df$S1_ID <- as.integer(Final_S1_ID)
 
