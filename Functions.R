@@ -1,34 +1,44 @@
 ######################################################################################## 
 #########################  CHAR2POL FUNCTION  ##########################################
 ########################################################################################
-
 Char2Pol <- function(MultiPol_Char, plot=FALSE){
-  MP_Test <- MultiPol_Char
-  MP_Test <- str_remove_all(MP_Test, "[()MULTIPOLYGON]")
-  MP_Test <- strsplit(MP_Test,",")
-  MP_Test <- strsplit(MP_Test[[1]]," ")
   
-  PolDataFrame <- data.frame(Lat = double(),
-                             Lon = double(), 
-                             stringsAsFactors=FALSE) 
+  MP_TEST <- MultiPol_Char
+  MP_TEST <- str_remove_all(MP_TEST, "[()MULTIPOLYGON]")
+  MP_TEST <- strsplit(MP_TEST,",")
+  MP_TEST <- strsplit(MP_TEST[[1]]," ")
   
-  for(i in 1:length(MP_Test)){
-    MP_Test[[i]]<- MP_Test[[i]][!(MP_Test[[i]][] %in% c(""))]
-    PolDataFrame[i,1] <- MP_Test[[i]][1]
-    PolDataFrame[i,2] <- MP_Test[[i]][2]
+  MP_TESTDF <- data.frame(ID =  numeric(),
+                          Lon = double(),
+                          Lat = double(), 
+                          stringsAsFactors=FALSE)
+  
+  for(i in 1:length(MP_TEST)){
+    MP_TEST[[i]]<- MP_TEST[[i]][!(MP_TEST[[i]][] %in% c(""))]
+    MP_TESTDF[i,2] <- MP_TEST[[i]][1]
+    MP_TESTDF[i,3] <- MP_TEST[[i]][2]
   }
   
+  MP_TESTDF$ID <- seq(from=1, to=length(MP_TEST))
   
-  PolDataFrame <- data.matrix(PolDataFrame[], rownames.force = NA)
-  PolDataFrame <- Polygon(PolDataFrame)
-  PolDataFrame <- Polygons(c(PolDataFrame), "PolDataFrame")
-  PolDataFrame <- SpatialPolygons(c(PolDataFrame), c(1:1), proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs"))
+  MP_TESTDF <- mutate_all(MP_TESTDF, function(x) as.numeric(as.character(x)))
+  
+  ch <- chull(MP_TESTDF$Lon,MP_TESTDF$Lat)
+  
+  xy <- as.matrix(MP_TESTDF[ch,c(2,3)])
+  
+  FinalPol <- coords2Polygons(xy, hole = NA, ID=c("1"))
+  
+  crs(FinalPol) <- CRS("+proj=longlat +datum=WGS84")
+  
+  class(FinalPol)
+  
   
   if(plot == TRUE){
     mapview(PolDataFrame)
   }
   
-  return(PolDataFrame)
+  return(FinalPol)
   
 }
 
