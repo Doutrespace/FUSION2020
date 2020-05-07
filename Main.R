@@ -1,6 +1,10 @@
 ############################################################################################################
-############################################################################################################
 ##################################### S1&S2_Fusion #########################################################
+
+
+
+
+
 ############################################################################################################
 ############################################################################################################
 #install.packages("rlang")
@@ -91,7 +95,6 @@ rownames(Sentinel_2_filtered) <- NULL
 ### Unique S1 date Images based on high ovelap with the AOI
 Dupl_S1Dates <- Sentinel_1_filtered[duplicated(Sentinel_1_filtered$ingestiondate),5]
 
-
 ### Make a list of unique S2 Dates 
 List_Date_S2 <- unique(Sentinel_2_filtered$ingestiondate)
 
@@ -167,10 +170,11 @@ Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
 Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
 Match_df$S2_ID <- as.integer(Final_S2_ID)
 
-#-> 8 has to be replaced to match the col name "ingestiondate", in my case is 9 thats why! ################################ solve?
-Match_df$S2_Date <- as.Date(substr(Sentinel_2$ingestiondate[Final_S2_ID],1,10))
+#-> 8 has to be replaced to match the col name "ingestiondate", in my case is 9 thats why! ################################ solved
+Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID,grep("ingestiondate", colnames(Sentinel_2))],1,10))
 
 names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
+
 Match_df$S1_ID <- as.integer(Final_S1_ID)
 
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
@@ -184,20 +188,52 @@ Match_df$AllD <- 0
 for(i in 1: length(Match_df$S1_ID)){
   
   TempData <- PolOv(Char2Pol(Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)],),
-                    Char2Pol(Sentinel_2$footprint[Match_df$S2_ID[i] == row.names(Sentinel_2)]),
+                    Char2Pol(Sentinel_2$footprint[Match_df$S2_ID[i] == row.names(Sentinel_2)],),
                     area)
   
+  # revisar cómo se calculan las áreas y que pasa cuando AOI es más grande que el área de S2
+  # preguntar al comienzo por la aplicacion, quiere aplicar el filtro de nuves? si o no 
+  
   Match_df$S1S2D[i]  <- TempData[1]
-  Match_df$S1AD[i] <- TempData[2]
-  Match_df$S2AD[i] <- TempData[3]
-  Match_df$AllD[i] <- TempData[4]
+  Match_df$S1AD[i]   <- TempData[2]
+  Match_df$S2AD[i]   <- TempData[3]
+  Match_df$AllD[i]   <- TempData[4]
   
 }
 
-class(Match_df$S1_ID[1])
+ViewMatch(Char2Pol(Sentinel_1$footprint[2],"S1"),Char2Pol(Sentinel_2$footprint[1],"S2"),area)####### Antonio should fix it
 
-ViewMatch(Char2Pol(Sentinel_1$footprint[4]),Char2Pol(Sentinel_2$footprint[2]),area) ####### Antonio should fix it
+########################################################################################
+######################################################################################## 
+########################################################################################
+########################################################################################
 
+
+
+
+Test1 <- Char2Pol(Sentinel_1$footprint[2],"S1")
+Test2 <- Char2Pol(Sentinel_2$footprint[1],"S2")
+
+Dataframetst <- as.data.frame("Poligons" = c(Test1,Test2),"ID" =c("S2","S1"))
+
+Test1@polygons[[1]]@ID
+Test2@polygons[[1]]@ID
+
+List_Test <- list(Test1, Test2, area)
+
+plot(Test1@polygons@Polygons)
+
+SpatialPolygonsDataFrame(List_Test[1], "Id")
+
+
+mapview(List_Test, zcol = "ID")# c(List_Test[[1]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID))
+
+# Option2 -> build a dataframe 
+
+
+
+############## IF AREA OF S§ < AOI THEN; DELETE THOSE FROM MATCHDF AND CHANGE THE S" POLIGON COLOR IN GUI
+############## TO RED AND PUT A WARNING
 ######################################################################################## 
 ########################################################################################
 ######################################################################################## 
@@ -284,38 +320,8 @@ Checker <- function(S1_ID, S2_ID){
 Checker(Final_S1_ID,Final_S2_ID)
 ########################################################################################
 ########################################################################################
-ui <- fluidPage(
-  titlePanel("censusVis"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      helpText("Choose Time Difference"),
-      
-      selectInput("var", 
-                  label = "Choose a variable to display",
-                  choices = c("Percent White", "Percent Black",
-                              "Percent Hispanic", "Percent Asian"),
-                  selected = "Percent White"),
-      
-      sliderInput("range", 
-                  label = "Range of interest:",
-                  min = 0, max = 100, value = c(0, 100))
-    ),
-    
-    mainPanel(plotOutput("map"))
-  )
-)
 
-# Server logic ----
 
-server <- function(input, output){
-  output$map <- renderPlot({
-    percent_map( # some arguments )
-  })
-}
-
-# Run app ----
-shinyApp(ui, server)
 
 ########################################################################################
 ################################### Download the Data ##################################

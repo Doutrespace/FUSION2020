@@ -1,7 +1,7 @@
 ######################################################################################## 
 #########################  CHAR2POL FUNCTION  ##########################################
 ########################################################################################
-Char2Pol <- function(MultiPol_Char, plot=FALSE){
+Char2Pol <- function(MultiPol_Char, Id = "no", plot=FALSE){
   
   MP_TEST <- MultiPol_Char
   MP_TEST <- str_remove_all(MP_TEST, "[()MULTIPOLYGON]")
@@ -27,7 +27,7 @@ Char2Pol <- function(MultiPol_Char, plot=FALSE){
   
   xy <- as.matrix(MP_TESTDF[ch,c(2,3)])
   
-  FinalPol <- coords2Polygons(xy, hole = NA, ID=c("1"))
+  FinalPol <- coords2Polygons(xy, hole = NA, ID=c(Id))####wtf is c("1")
   
   crs(FinalPol) <- CRS("+proj=longlat +datum=WGS84")
 
@@ -69,8 +69,8 @@ ViewMatch <- function(S1_Pol, S2_Pol, Aoi){
   #Reproject all Sp to match CRS
   
   All_Pol <- do.call(bind, list(S1_Pol, S2_Pol, Aoi)) 
-  
   mapview(All_Pol)
+  
 }
 
 ######################################################################################## 
