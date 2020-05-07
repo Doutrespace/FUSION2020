@@ -30,12 +30,9 @@ Char2Pol <- function(MultiPol_Char, plot=FALSE){
   FinalPol <- coords2Polygons(xy, hole = NA, ID=c("1"))
   
   crs(FinalPol) <- CRS("+proj=longlat +datum=WGS84")
-  
-  class(FinalPol)
-  
-  
+
   if(plot == TRUE){
-    mapview(PolDataFrame)
+    mapview(FinalPol)
   }
   
   return(FinalPol)
@@ -60,12 +57,20 @@ PolOv <- function(S1_Pol, S2_Pol, Aoi){
   
   Data <- c(overlap_S1S2,overlap_S1A,overlap_S2A,overlap_all)
   
+  return(Data)
+  
+}
+
+######################################################################################## 
+############################  View FUNCTION  ##########################################
+########################################################################################
+
+ViewMatch <- function(S1_Pol, S2_Pol, Aoi){
+  #Reproject all Sp to match CRS
+  
   All_Pol <- do.call(bind, list(S1_Pol, S2_Pol, Aoi)) 
   
   mapview(All_Pol)
-  
-  return(Data)
-  
 }
 
 ######################################################################################## 

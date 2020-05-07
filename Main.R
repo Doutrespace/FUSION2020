@@ -9,9 +9,9 @@
 
 #setting wd
 #Antonio
-Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
+#Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 #Nils
-#Fusion_Folder <- "D:/FUSION2020" 
+Fusion_Folder <- "D:/FUSION2020" 
 setwd(Fusion_Folder)
 ### Import Functions from Function.R File
 source("Functions.R")
@@ -92,23 +92,6 @@ rownames(Sentinel_2_filtered) <- NULL
 Dupl_S1Dates <- Sentinel_1_filtered[duplicated(Sentinel_1_filtered$ingestiondate),5]
 
 
-# PROBLEM, DO WE NEED TO FILTER HERE? Sentinel_1_filtered has no -> "overlap field" ################################ smth to think
-
-#if(length(Dupl_S1Dates)> 0){
-  
-#  NewDF <- Sentinel_1_filtered[Sentinel_1_filtered$ingestiondate %in% Dupl_S1Dates,]
-  
-# NewDF$Overlap <- format(round(NewDF$Overlap, 5), nsmall = 5)
-  
-#  for(i in 1:length(Dupl_S1Dates)){
-#    Dupl_S1Dates[i]  <- rownames(NewDF[NewDF$Overlap == min(NewDF[Dupl_S1Dates[i] == NewDF$ingestiondate[],9]) ,])
-#  }
-  
-#  Sentinel_1_filtered <- Sentinel_1_filtered[!(row.names(Sentinel_1_filtered) %in% Dupl_S1Dates), ]
-  
-#  rm(NewDF,Dupl_S1Dates)
-#}
-
 ### Make a list of unique S2 Dates 
 List_Date_S2 <- unique(Sentinel_2_filtered$ingestiondate)
 
@@ -184,8 +167,8 @@ Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
 Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
 Match_df$S2_ID <- as.integer(Final_S2_ID)
 
-#-> 8 has to be replaced to match the col name "ingestiondate", in my case is 9 thats why! ################################ smth to solve
-Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID, 8],1,10))
+#-> 8 has to be replaced to match the col name "ingestiondate", in my case is 9 thats why! ################################ solve?
+Match_df$S2_Date <- as.Date(substr(Sentinel_2$ingestiondate[Final_S2_ID],1,10))
 
 names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
 Match_df$S1_ID <- as.integer(Final_S1_ID)
@@ -200,7 +183,7 @@ Match_df$AllD <- 0
 #---------------> INCEPTION <------------------------------------
 for(i in 1: length(Match_df$S1_ID)){
   
-  TempData <- PolOv(Char2Pol(Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)]),
+  TempData <- PolOv(Char2Pol(Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)],),
                     Char2Pol(Sentinel_2$footprint[Match_df$S2_ID[i] == row.names(Sentinel_2)]),
                     area)
   
@@ -211,6 +194,9 @@ for(i in 1: length(Match_df$S1_ID)){
   
 }
 
+class(Match_df$S1_ID[1])
+
+ViewMatch(Char2Pol(Sentinel_1$footprint[4]),Char2Pol(Sentinel_2$footprint[2]),area) ####### Antonio should fix it
 
 ######################################################################################## 
 ########################################################################################
