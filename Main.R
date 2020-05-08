@@ -165,9 +165,9 @@ Match_df$S2_ID <- as.integer(Final_S2_ID)
 
 #-> 8 has to be replaced to match the col name "ingestiondate", in my case is 9 thats why! ################################ solved
 Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID,grep("ingestiondate", colnames(Sentinel_2))],1,10))
-
+# setting row names
 names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
-
+# set match df integer
 Match_df$S1_ID <- as.integer(Final_S1_ID)
 
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
