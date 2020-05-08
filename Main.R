@@ -6,9 +6,9 @@
 ############################################################################################################
 #devtools::install_github("16EAGLE/getSpatialData")
 #Antonio
-Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
+#Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 #Nils
-#Fusion_Folder <- "D:/FUSION2020" 
+Fusion_Folder <- "D:/FUSION2020" 
 setwd(Fusion_Folder)
 ### Import Functions from Function.R File
 source("Functions.R")
@@ -161,9 +161,9 @@ Match_df$S2_ID <- as.integer(Final_S2_ID)
 
 #-> 8 has to be replaced to match the col name "ingestiondate", in my case is 9 thats why! ################################ solved
 Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID,grep("ingestiondate", colnames(Sentinel_2))],1,10))
-
+# setting row names
 names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
-
+# set match df integer
 Match_df$S1_ID <- as.integer(Final_S1_ID)
 
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
@@ -192,8 +192,35 @@ for(i in 1: length(Match_df$S1_ID)){
   
 }
 
+
 #View poligon overay
 ViewMatch(1,Match_df,Sentinel_1,Sentinel_2,area) 
+
+########################################################################################
+######################################################################################## 
+########################################################################################
+########################################################################################
+
+
+Test1 <- Char2Pol(Sentinel_1$footprint[2],"S1")
+Test2 <- Char2Pol(Sentinel_2$footprint[1],"S2")
+
+Dataframetst <- as.data.frame("Poligons" = c(Test1,Test2),"ID" =c("S2","S1"))
+
+Test1@polygons[[1]]@ID
+Test2@polygons[[1]]@ID
+
+List_Test <- list(Test1, Test2, area)
+
+plot(Test1@polygons@Polygons)
+
+SpatialPolygonsDataFrame(List_Test[1], "Id")
+
+
+mapview(List_Test, zcol = "ID")# c(List_Test[[1]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID))
+
+# Option2 -> build a dataframe 
+>>>>>>> 70eb22707ad6577730766c68ab6a87a4831c68ab
 
 #Delete nonS1S2 overay matches
 Match_df <- subset(Match_df, S1S2OV!="FALSE")
@@ -319,169 +346,9 @@ datasets_prep[[1]][[1]][3] #first dataset, first tile, 60 m resolution
 ## Load them directly into R
 r <- stack(datasets_prep[[1]][[1]][1])
 
+########################################################################################
+########################################################################################
+########################################################################################
 
 
-
-
-##############################################################################################
-######################################Preprocessing S1########################################
-##############################################################################################
-#(Kemeng </3)
-
-
-
-ext_s1 <- extent(area)
-extent(area)
-
-devtools::install_github("https://github.com/Shirobakaidou/rSNAP")
-
-preprocessing(sourcePath = "D:/FUSION2020/Fusion_Output",
-              wd = "D:/RS1_2_Fusion/Fusion_Output/Sentinel_1_Prep",
-              pixelSpacingInMeter=10,
-              geoRegion = "9.776839256286621 49.75139617919922, 10.520546913146973 49.75139617919922, 10.520546913146973 48.97669982910156, 9.776839256286621 48.97669982910156, 9.776839256286621 49.75139617919922")
-
-s1 <- raster("D:/RS1_2_Fusion/Fusion_Output/Sentinel_1_Prep/Output/1_S1B_IW_GRDH_1SDV_20190619.tif")
-
-crs_s1 <- crs(s1)
-
-###extent of s1
-extent(s1)
-
-ext_s1 <- extent(s1)
-plot(s1)
-
-s1
-
-##############################################################################################
-######################################Preprocessing S2########################################
-##############################################################################################
-###Load S2 Bands
-### choose manually wd from s2  img
-#setwd(choose.dir())
-setwd("D:/RS1_2_Fusion/jp2_2")
-
-###check crs
-s2a <- readGDAL("T32UNA_20190619T103031_B01.tif")
-
-### set path
-jp2_path <-"D:/RS1_2_Fusion/jp2_2/" #setwd(choose.dir())
-
-###load jp2 stack
-jp2_to_raster <- function(jp2_path, ref_crs) {
-  # read ".jp2" and convert to raster
-  sen2_GDAL <- readGDAL(jp2_path)
-  sen2_GDAL %>% 
-    as.matrix() %>% 
-    t() %>% 
-    raster(crs=ref_crs, 
-           xmn=xmin(sen2_GDAL), xmx=xmax(sen2_GDAL), 
-           ymn=ymin(sen2_GDAL), ymx=ymax(sen2_GDAL)) -> tmp_raster
-  
-  # get band number from file path
-  strsplit(jp2_path, "_")[[1]][length(strsplit(jp2_path, "_")[[1]])] %>% 
-    strsplit(".jp2") %>% 
-    as.character() -> names(tmp_raster)
-  
-  return(tmp_raster)
-}
-
-###name file & set crs
-file <- "T32UNA_20190619T103031_B01.tif"#jps
-crs_s2 <- "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
-raster <- jps_to_raster(file , crs(crs_s2))
-
-SEN2_PATHS <- list.files(pattern = "*.jp2$", full.names = T)
-raster_stack <- raster::stack(lapply(SEN2_PATHS, jp2_to_raster, ref_crs = crs(crs_s2)))
-
-S2_JP2_List <- list.files(jp2_path, full.names = TRUE, pattern = ".jp2$")
-
-### convert into TIF
-for (file in S2_JP2_List) {
-  out_file <- extension(file, 'tif')
-  gdal_translate(src_dataset = file, dst_dataset = out_file, ot =
-                   "UInt16", of = "GTiff")
-} 
-###remove jp2
-junk <- dir(path="D:/RS1_2_Fusion/jp2_2", pattern=".jp2$") # 
-file.remove(junk) # ?file.remove
-
-###import TIF
-
-TMP_PATH <- paste0(getwd(),"/")
-
-rlist <- paste0(grep("*.tif*", list.files(path = getwd(), pattern="*.tif$", full.names = TRUE), value=T))
-
-Rst_Stk <- lapply(rlist,raster)
-
-crs(Rst_Stk[[2]]) <- CRS(crs_s2)
-
-
-##crop to s1 extent
-#tests
-# create a raster from the matrix - a "blank" raster of 4x4
-myRaster1 <- raster(nrow=10, ncol=10)
-
-# assign "data" to raster: 1 to n based on the number of cells in the raster
-myRaster1[]<- 1:ncell(myRaster1)
-plot(myRaster1)
-extent(myRaster1)
-#resampling
-Rst_Stk <- resample(myRaster1, file, method='bilinear')
-
-extent(ext_s1)
-s2_ext <- crop(Rst_Stk, extent(Rst_Stk, 9.776796 , 10.5206 , 48.97663 , 49.75142 ))
-
-s2_ext <-   alignExtent(Rst_Stk, ext_s1 , snap='near')
-
-alignExtent(ext_s1, Rst_Stk, snap='near')
-extent(s1) <- alignExtent(s1, Rst_Stk)
-
-## Resample all to 10x10
-
-for(i in 1: length(Rst_Stk)){
-  
-  crs(Rst_Stk[[i]]) <- CRS(crs_s2)
-  
-  if(res(Rst_Stk[[1]]) > 10){
-    #resample
-    Rst_Stk[[i]] <- resample(Rst_Stk[[2]],Rst_Stk[[i]], method = 'ngb')
-    plot(paste0("Raster ", i , " resampled..."))
-  }
-}
-
-## Stack
-Rst_Stk <- stack(Rst_Stk)
-
-
-for(i in rlist) { assign(unlist(strsplit(i, "[.]"))[1], raster(i)) } 
-lapply(rlist, raster)
-
-stack(rlist)
-
-#write the output raster to file
-r <- writeRaster(rlist, filename = "D:/RS1_2_Fusion/jp2_2/", format="GTiff", overwrite=TRUE)
-##############################################################################################
-######################################Reproject###############################################
-##############################################################################################
-
-so....
-
-RGB_band2_s2 <- 
-  raster("T32UNA_20190619T103031_B02.tif")
-
-plot(RGB_band2_s2)
-##############################################################################################
-######################################Stacking################################################
-##############################################################################################
-
-...in progress^^ 
-  
-  
-  
-  
-  
-  
-  
-  
-  
 
