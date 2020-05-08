@@ -6,9 +6,9 @@
 ############################################################################################################
 #devtools::install_github("16EAGLE/getSpatialData")
 #Antonio
-#Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
+Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 #Nils
-Fusion_Folder <- "D:/FUSION2020" 
+#Fusion_Folder <- "D:/FUSION2020" 
 setwd(Fusion_Folder)
 ### Import Functions from Function.R File
 source("Functions.R")
@@ -195,7 +195,6 @@ for(i in 1: length(Match_df$S1_ID)){
 }
 
 ViewMatch(Char2Pol(Sentinel_1$footprint[2],"S1"),Char2Pol(Sentinel_2$footprint[1],"S2"),area)####### Antonio should fix it
-
 ########################################################################################
 ######################################################################################## 
 ########################################################################################
