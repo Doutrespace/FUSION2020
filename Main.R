@@ -59,9 +59,6 @@ Sentinel_2 <- getSentinel_query(time_range = c(TimeSpan_Start , TimeSpan_End), p
 Sentinel_1 <- getSentinel_query(time_range = c(TimeSpan_Start , TimeSpan_End), platform = "Sentinel-1", aoi = area) #or "Sentinel-1" or "Sentinel-3"
 
 ### Filter the records
-###see all available filter attributes
-unique(Sentinel_2$processinglevel)
-
 Sentinel_2_filtered <- Sentinel_2[which(Sentinel_2$processinglevel == "Level-2A"),] #filter by Level
 Sentinel_2_filtered <- Sentinel_2_filtered[as.numeric(Sentinel_2_filtered$cloudcoverpercentage) <= 30, ] #filter by clouds
 Sentinel_1_filtered <- Sentinel_1[which(Sentinel_1$producttype == "GRD"),] #format
@@ -147,8 +144,6 @@ for(i in 1:length(Sentinel_1_filtered$ingestiondate)){
 Sentinel_1 <- Sentinel_1[Final_S1_ID,]
 Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 
-
-
 #Sentinel_1_filtered$Overlap <- 0
 #Sentinel_1_filtered$Overlap <- sapply(Sentinel_1_filtered$footprint, function(x) MFPF(x))
 
@@ -173,6 +168,7 @@ Match_df$S1_ID <- as.integer(Final_S1_ID)
 
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
 
+Match_df$S1S2OV <- "--"
 Match_df$S1S2D <- 0
 Match_df$S1AD <- 0
 Match_df$S2AD <- 0
@@ -192,37 +188,15 @@ for(i in 1: length(Match_df$S1_ID)){
   Match_df$S1AD[i]   <- TempData[2]
   Match_df$S2AD[i]   <- TempData[3]
   Match_df$AllD[i]   <- TempData[4]
+  Match_df$S1S2OV[i] <- TempData[5]
   
 }
 
-ViewMatch(Char2Pol(Sentinel_1$footprint[2],"S1"),Char2Pol(Sentinel_2$footprint[1],"S2"),area)####### Antonio should fix it
-########################################################################################
-######################################################################################## 
-########################################################################################
-########################################################################################
+#View poligon overay
+ViewMatch(1,Match_df,Sentinel_1,Sentinel_2,area) 
 
-
-
-
-Test1 <- Char2Pol(Sentinel_1$footprint[2],"S1")
-Test2 <- Char2Pol(Sentinel_2$footprint[1],"S2")
-
-Dataframetst <- as.data.frame("Poligons" = c(Test1,Test2),"ID" =c("S2","S1"))
-
-Test1@polygons[[1]]@ID
-Test2@polygons[[1]]@ID
-
-List_Test <- list(Test1, Test2, area)
-
-plot(Test1@polygons@Polygons)
-
-SpatialPolygonsDataFrame(List_Test[1], "Id")
-
-
-mapview(List_Test, zcol = "ID")# c(List_Test[[1]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID))
-
-# Option2 -> build a dataframe 
-
+#Delete nonS1S2 overay matches
+Match_df <- subset(Match_df, S1S2OV!="FALSE")
 
 
 ############## IF AREA OF S§ < AOI THEN; DELETE THOSE FROM MATCHDF AND CHANGE THE S" POLIGON COLOR IN GUI

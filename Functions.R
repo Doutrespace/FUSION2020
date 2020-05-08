@@ -27,7 +27,11 @@ Char2Pol <- function(MultiPol_Char, Id = "no", plot=FALSE){
   
   xy <- as.matrix(MP_TESTDF[ch,c(2,3)])
   
-  FinalPol <- coords2Polygons(xy, hole = NA, ID=c(Id))####wtf is c("1")
+  options(warn=-1)
+  
+  FinalPol <- coords2Polygons(xy, hole = NA, ID=c(Id))
+  
+  options(warn=0)
   
   crs(FinalPol) <- CRS("+proj=longlat +datum=WGS84")
 
@@ -44,33 +48,41 @@ Char2Pol <- function(MultiPol_Char, Id = "no", plot=FALSE){
 ########################################################################################
 
 PolOv <- function(S1_Pol, S2_Pol, Aoi){
-  ##############################
+  #
   crs(S1_Pol) <- CRS("+proj=longlat +datum=WGS84")
   crs(S2_Pol) <- CRS("+proj=longlat +datum=WGS84")
   crs(Aoi)    <- CRS("+proj=longlat +datum=WGS84")
-  ##############################
+  
+  #
   Int_S1A <-  raster::intersect(S1_Pol, Aoi)
   overlap_S1A <- (area(Int_S1A)*100)/(area(Aoi))
   
+  #
   Int_S2A <-  raster::intersect(S2_Pol, Aoi)
   overlap_S2A <- (area(Int_S2A)*100)/(area(Aoi))
   
-  overlap_S1S2 <- 0 
-  overlap_all <- 0
+  #############
   
-  tryCatch( {Int_S1S2 <- raster::intersect(S1_Pol, S2_Pol)},
-            warning = function(w){
-              Int_S1S2 <- NULL
-              print("Not S1S2 overlap")})
+  options(warn=-1)
   
+  #
+  Int_S1S2 <-  raster::intersect(S1_Pol, S2_Pol)
+  if(is.null(Int_S1S2)){
+    overlap_S1S2 <- 0
+    overlap_all <- 0
+    Status <- "FALSE"
+  } else{
+    
+    overlap_S1S2 <- (area(Int_S2A)*100)/(area(Aoi))
+    Int_All <-  raster::intersect(S1_Pol, S2_Pol)
+    overlap_all <- area(Int_All)
+    Status <- "TRUE"
+  }
   
-  if(class(Int_S1S2) != "NULL"){
-    Int_all <- raster::intersect(Int_S1S2, Aoi)
-    overlap_S1S2 <- (area(Int_S1S2)*100)/(area(S1_Pol))
-    overlap_all <- (area(Int_all)*100)/(area(Aoi))
-  } 
+  options(warn=0)
+
   
-  Data <- c(overlap_S1S2,overlap_S1A,overlap_S2A,overlap_all)
+  Data <- c(overlap_S1S2,overlap_S1A,overlap_S2A,overlap_all,Status)
   
   return(Data)
   
@@ -80,10 +92,18 @@ PolOv <- function(S1_Pol, S2_Pol, Aoi){
 ############################  View FUNCTION  ##########################################
 ########################################################################################
 
-ViewMatch <- function(S1_Pol, S2_Pol, Aoi){
-  #Reproject all Sp to match CRS
+ViewMatch <- function(id, MchDf, S1Df, S2Df, Aoi){
   
-  All_Pol <- do.call(bind, list(S1_Pol, S2_Pol, Aoi)) 
+  S1POl <- Char2Pol(S1Df$footprint[MchDf$S1_ID[id] == rownames(S1Df) ],"S1")
+  S2POl <- Char2Pol(S2Df$footprint[MchDf$S2_ID[id] == rownames(S2Df) ],"S2")
+  
+  #Reproject all Sp to match CRS
+  crs(S1POl) <- CRS("+proj=longlat +datum=WGS84")
+  crs(S2POl) <- CRS("+proj=longlat +datum=WGS84")
+  crs(Aoi)   <- CRS("+proj=longlat +datum=WGS84")
+  
+  All_Pol <- do.call(bind, list(S1POl, S2POl, Aoi)) 
+  
   mapview(All_Pol)
   
 }
