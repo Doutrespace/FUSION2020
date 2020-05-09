@@ -16,7 +16,18 @@ The first step is to determine the area of investigation. Then the log-in data f
 
 # Data frame output (Statistics)
 
-Match_Df #in ViewMatch in viewer, which will look like this:
+The Match_Df #in ViewMatch, which will give you the following insights:
+
+| S1_ID| S1_Date   | S2_ID |S2_Date    |DateDiff |S1S2OV |S1S2D  | S1AD  | S2AD   | AIID | 
+| ---- | -------   | ----- | --------- | -----   | ----- | ----- | ----- | ------ | ---- | 
+| 2    |2020-03-30 | 2     |2020-03-29 | 1       | 11.86 | 15.11 | 0     | 78.87  |82.56 |
+| 5    |2020-04-02 | 3     |2020-03-30 | 2       | 50.05 | 14.36 | 16.78 | 14.89  |56.87 |
+| 9    |2020-04-08 | 7     |2020-04-01 | 4       | 84.89 | 65.78 | 89.76 |77.34   |100   | 
+
+Next to your predefined Dates and the time in between you are able to find the Time Difference (DateDiff) in days, aswell as...
+
+
+
 
 <p align="center">
   <img width="460" height="300" src="https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview01.PNG">
@@ -25,6 +36,10 @@ Match_Df #in ViewMatch in viewer, which will look like this:
 <p align="center">
   <img width="460" height="300" src="https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview02.PNG">
 </p>
+
+
+
+
 
 
 <p align="center">
