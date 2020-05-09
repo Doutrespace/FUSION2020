@@ -48,6 +48,7 @@ area <- SpatialPolygons(c(area), c(1:1), proj4string=CRS("+proj=longlat +datum=W
 ### set login credentials and archive directory https://scihub.copernicus.eu/dhus/#/home
 Username <- dlgInput("Enter your copernicus username:", default = "", Sys.info()["user"])$res
 
+### set your username
 if (!length(Username)) {# The user clicked the 'cancel' button
   cat("No Username entered")
 } else {
@@ -201,99 +202,10 @@ Match_df <- subset(Match_df, S1S2OV!="FALSE")
 
 ### View poligon overay
 ViewMatch(1,Match_df,Sentinel_1,Sentinel_2,area) 
-<<<<<<< HEAD
+
 
 ### now open the Match_df and watch your statistics
-=======
-########################################################################################
-######################################################################################## 
-########################################################################################
-########################################################################################
 
-
-Test1 <- Char2Pol(Sentinel_1$footprint[2],"S1")
-Test2 <- Char2Pol(Sentinel_2$footprint[1],"S2")
-
-Dataframetst <- as.data.frame("Poligons" = c(Test1,Test2),"ID" =c("S2","S1"))
-
-Test1@polygons[[1]]@ID
-Test2@polygons[[1]]@ID
-
-List_Test <- list(Test1, Test2, area)
-
-plot(Test1@polygons@Polygons)
-
-SpatialPolygonsDataFrame(List_Test[1], "Id")
-
-
-mapview(List_Test, zcol = "ID")# c(List_Test[[1]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID,List_Test[[2]]@polygons[[1]]@ID))
-
-# Option2 -> build a dataframe 
->>>>>>> 70eb22707ad6577730766c68ab6a87a4831c68ab
-
-
-
-
-############## IF AREA OF S§ < AOI THEN; DELETE THOSE FROM MATCHDF AND CHANGE THE S" POLIGON COLOR IN GUI
-############## TO RED AND PUT A WARNING
-######################################################################################## 
-########################################################################################
-######################################################################################## 
-########################################################################################
-########################################################################################
-
-Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)]
-
-TempData <- PolOv(Char2Pol(Sentinel_1$footprint[row.names(Sentinel_1) == Match_df$S1_ID[1]]),
-                  Char2Pol(Sentinel_2$footprint[row.names(Sentinel_2) == Match_df$S2_ID[1]]),
-                  area)
-
-TempData[2]
-  
-
-Sentinel_1$footprint[row.names(Sentinel_1) == Match_df$S1_ID]
-
-row.names(Sentinel_1)
-
-Match_df$S1_ID
-
-
-#Final@plotOrder
-#######################
-
-<<<<<<< HEAD
-###############
-  
-str_remove_all(MP_Test, "[()MULTIPOLYGON]")
-
-
-Tmp <- strsplit(Tmp,",")
-Tmp <- strsplit(Tmp[[1]]," ")
-df <- data.frame(Long=double(),Lat=double()) 
-
-
-
-########
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> b1535583bffd9e0a4e67f4f0e8ee48563f5e05b8
-
-
-
-
-
-class(Sentinel_2$footprint[Match_df$S2_ID == rownames(Sentinel_2)])
-
->>>>>>> 7af573e4e6ac94117bf06414190b8551103e44d6
 
 ################################################################################################
 ################################### Download the Data ##########################################
