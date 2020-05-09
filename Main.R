@@ -6,9 +6,9 @@
 ############################################################################################################
 #devtools::install_github("16EAGLE/getSpatialData")
 #Antonio
-#Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
+Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 #Nils
-Fusion_Folder <- "D:/FUSION2020" 
+#Fusion_Folder <- "D:/FUSION2020" 
 setwd(Fusion_Folder)
 ### Import Functions from Function.R File
 source("Functions.R")
@@ -28,8 +28,7 @@ ipak <- function(pkg){
 # usage
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
-              "mapedit","stringr","rgeos","rlang","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs",
-              "tryCatchLog")
+              "mapedit","stringr","rgeos","rlang","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs")
 ipak(packages)
 
 
@@ -192,6 +191,8 @@ for(i in 1: length(Match_df$S1_ID)){
   
 }
 
+#Delete nonS1S2 overay matches
+Match_df <- subset(Match_df, S1S2OV!="FALSE")
 
 #View poligon overay
 ViewMatch(1,Match_df,Sentinel_1,Sentinel_2,area) 
@@ -222,8 +223,7 @@ mapview(List_Test, zcol = "ID")# c(List_Test[[1]]@polygons[[1]]@ID,List_Test[[2]
 # Option2 -> build a dataframe 
 >>>>>>> 70eb22707ad6577730766c68ab6a87a4831c68ab
 
-#Delete nonS1S2 overay matches
-Match_df <- subset(Match_df, S1S2OV!="FALSE")
+
 
 
 ############## IF AREA OF S§ < AOI THEN; DELETE THOSE FROM MATCHDF AND CHANGE THE S" POLIGON COLOR IN GUI
