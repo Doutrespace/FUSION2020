@@ -18,7 +18,7 @@ The first step is to determine the area of investigation. Then the log-in data f
 
 Match_Df #in ViewMatch in viewer, which will look like this:
 
-<img src="Image/Overview01.PNG>
+<img src="Image/Overview01.png>
 
 
 
