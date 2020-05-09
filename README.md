@@ -19,7 +19,7 @@ The first step is to determine the area of investigation. Then the log-in data f
 Match_Df #in ViewMatch in viewer, which will look like this:
 ```
 
-<p align="center"><img width="60%" src="images/Overview01.PNG"></p>
+<p align="center"><img width="60%" src="image/Overview01.PNG"></p>
 <p align="center"><sub>Figure 1: Screenshot of the RStudio Viewer, displaying the previously defined session AOI and Sentinel-1 and Sentinel-2 data of your choice using ViewMatch</sub></p>
 <br>
 
