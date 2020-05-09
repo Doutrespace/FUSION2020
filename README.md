@@ -20,8 +20,7 @@ Match_Df #in ViewMatch in viewer, which will look like this:
 ```
 
 <img src="image/Overview01.PNG>
-<p align="center"><sub>Figure 1: Screenshot of the RStudio Viewer, displaying the previously defined session AOI and Sentinel-1 and Sentinel-2 data of your choice using ViewMatch</sub></p>
-<br>
+
 
 
 
