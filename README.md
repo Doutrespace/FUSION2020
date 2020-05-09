@@ -14,6 +14,16 @@ The data is loaded via the API of ESA [scihub.copernicus] ( https://scihub.coper
 
 The first step is to determine the area of investigation. Then the log-in data for the scihub.copernicus of ESA (https://scihub.copernicus.eu/) are entered. The next step determines the date at which the existing data is to be searched ("Enter start / end of timespan (YYYY-MM-DD). Then the algorithm can run through to carry out its analysis.
 
+# Data frame output (Statistics)
+
+Match_Df #in ViewMatch in viewer, which will look like this:
+```
+
+<p align="center"><img width="60%" src="https://user-images.githubusercontent.com/56873526/81483460-9d207880-923e-11ea-86fa-c244eeca79a9.PNG"></p>
+<p align="center"><sub>Figure 1: Screenshot of the RStudio Viewer, displaying the previously defined session AOI and Sentinel-1 and Sentinel-2 data of your choice using ViewMatch</sub></p>
+<br>
+
+
 ## **Outlook:**
 
 
