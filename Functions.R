@@ -73,16 +73,15 @@ PolOv <- function(S1_Pol, S2_Pol, Aoi){
     Status <- "FALSE"
   } else{
     
-    overlap_S1S2 <- (area(Int_S2A)*100)/(area(Aoi))
-    Int_All <-  raster::intersect(S1_Pol, S2_Pol)
-    overlap_all <- area(Int_All)
+    overlap_S1S2 <- (area(Int_S1S2)*100)/(area(S1_Pol))
+    Int_All <-  raster::intersect(Int_S1S2, Aoi)
+    overlap_all <- (area(Int_All)*100)/(area(Aoi))
     Status <- "TRUE"
   }
   
   options(warn=0)
 
-  
-  Data <- c(overlap_S1S2,overlap_S1A,overlap_S2A,overlap_all,Status)
+  Data <- c(round(overlap_S1S2,2),round(overlap_S1A,2),round(overlap_S2A,2),round(overlap_all,2),Status) 
   
   return(Data)
   

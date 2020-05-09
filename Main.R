@@ -7,13 +7,11 @@
 #Antonio
 #Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 
-
-
-##########################################################################################
-############################   Set your path and define your area   ######################
-##########################################################################################
+############################################################################################################
+############################   Set your path and define your area   ########################################
+############################################################################################################
 ### Set wd
-#Nils
+
 Fusion_Folder <- "D:/FUSION2020" 
 setwd(Fusion_Folder)
 
@@ -33,11 +31,10 @@ ipak <- function(pkg){
   sapply(pkg, require, character.only = TRUE)
 }
 
-# usage
+### usage
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
-              "mapedit","stringr","rgeos","rlang","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs",
-              "tryCatchLog")
+              "mapedit","stringr","rgeos","rlang","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs")
 ipak(packages)
 
 
@@ -57,9 +54,11 @@ if (!length(Username)) {# The user clicked the 'cancel' button
   login_CopHub(username = Username)
 }
 
+### set timespan
 TimeSpan_Start <- dlgInput("Enter start of timespan (YYYY-MM-DD) :", default = "", Sys.info()["user"])$res
 TimeSpan_End <- dlgInput("Enter end of timespan (YYYY-MM-DD) :", default = "", Sys.info()["user"])$res
 
+###set archive folder
 set_archive(Archive_Folder)
 
 ### Use getSentinel_query to search for data (using the session AOI)
@@ -71,9 +70,9 @@ Sentinel_2_filtered <- Sentinel_2[which(Sentinel_2$processinglevel == "Level-2A"
 Sentinel_2_filtered <- Sentinel_2_filtered[as.numeric(Sentinel_2_filtered$cloudcoverpercentage) <= 50, ] #filter by clouds
 Sentinel_1_filtered <- Sentinel_1[which(Sentinel_1$producttype == "GRD"),] #format
 
-########################################################################################
-############################   Find the Fusion pairs   #################################
-########################################################################################
+##########################################################################################################
+############################   Find the Fusion pairs   ###################################################
+##########################################################################################################
 
 ### Store the row.name to use it with getSentinel_data
 Sentinel_1_filtered$ID <- row.names(Sentinel_1_filtered)
@@ -102,7 +101,7 @@ for(i in 1:length(List_Date_S2)){
   
   ### Make a list to get the row.name where ingestiondate == unique dates 
   Tem_List <- which(Sentinel_2_filtered$ingestiondate == List_Date_S2[i], arr.ind=T)
-  #print(Tem_List)
+  
   
   ### Get the row.name min val in each list
   Temporal_Min <- min(Sentinel_2_filtered$cloudcoverpercentage[Tem_List])
@@ -111,7 +110,7 @@ for(i in 1:length(List_Date_S2)){
   Temporal_Index <- which(Temporal_Min == Sentinel_2_filtered$cloudcoverpercentage[Tem_List], arr.ind=T)
   
   ### index ###############################?
-  #Index <- Temporal_Index[[1]][1]
+  
   Index <- Temporal_Index
   
   ### producing the final list
@@ -131,9 +130,9 @@ Sentinel_2_filtered <- Sentinel_2_filtered_F
 rm(Sentinel_2_filtered_F)
 
 
-#########################################################################################
-#####Make comparison Day timespan between S2 and S1 (S2 FIRST BECAUSE IS LESS DATA)######
-#########################################################################################
+###########################################################################################################
+#####################Make comparison by Day timespan between S2 and S1 ####################################
+###########################################################################################################
 
 ###Finding the closest Date
 Sentinel_1_filtered$ClosestS2Date <- 0
@@ -153,9 +152,9 @@ for(i in 1:length(Sentinel_1_filtered$ingestiondate)){
 Sentinel_1 <- Sentinel_1[Final_S1_ID,]
 Sentinel_2 <- Sentinel_2[unique(Final_S2_ID),]
 
-######################################################################################## 
-###########################Match Dataframe##############################################
-########################################################################################
+##########################################################################################################
+###########################Match Dataframe################################################################
+##########################################################################################################
 
 ### Build match dataframe to construct the GUI
 Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
@@ -197,14 +196,17 @@ for(i in 1: length(Match_df$S1_ID)){
   
 }
 
+###Delete nonS1S2 overay matches
+Match_df <- subset(Match_df, S1S2OV!="FALSE")
 
 ### View poligon overay
 ViewMatch(1,Match_df,Sentinel_1,Sentinel_2,area) 
 
+### now open the Match_df and watch your statistics
 
-########################################################################################
-################################### Download the Data ##################################
-########################################################################################
+################################################################################################
+################################### Download the Data ##########################################
+################################################################################################
 
 ## Download some datasets to your archive directory
 #datasets <- getSentinel_data(records =  Sentinel_2[unique(Final_S2_ID), ])
@@ -215,4 +217,8 @@ DownloadList <- c(1)
 datasets <- getSentinel_data(records =  Sentinel_1[row.names(Sentinel_1) == Match_df$S1_ID[DownloadList],] , dir_out = Archive_Folder)
 datasets <- getSentinel_data(records =  Sentinel_2[row.names(Sentinel_2) == Match_df$S2_ID[DownloadList],] , dir_out = Archive_Folder)
 
+datasets_prep <- prepSentinel(datasets, format = "tiff")
 
+################################################################################################
+##############################################Finite############################################
+################################################################################################
