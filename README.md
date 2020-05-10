@@ -22,15 +22,17 @@ The Match_Df in ViewMatch will give you the following insights:
 | 5    |2020-04-02 | 3     |2020-03-30 | 2       | TRUE  | 14.36 | 16.78 | 14.89  |56.87 |
 | 9    |2020-04-08 | 7     |2020-04-01 | 4       | TRUE  | 65.78 | 89.76 |77.34   |100   | 
 
-S1_Date = Pre defined S1 date (time in between)                      
-S2_Date = Pre defined S2 date (time in between)
-Date_Diff = Time difference between S1 and S2 in days
-S1S2OV = AOI is lying in the S1 and S2 area (TRUE/FALSE)
-S1S2D =
-S1AD =
-AIID = 
+
+ Tables        | Are           |
+| -------------|:------------- |
+| Date_Diff    | right-aligned | 
+| S1S2OV       | centered      |   
+| S1S2D        | are neat      |   
+| S1AD         |               |
+| S2AD         |               |
 
 
+-------------------------------------------------------------------------------------------------------------------------------------------
 
 
 ViewMatch overview           | ViewMatch centred on sentinel 2 
