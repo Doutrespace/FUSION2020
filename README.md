@@ -3,7 +3,7 @@
 
 The FUSION2020 R algorithm based on the 16EAGLES/GetSpatialData package provides automated decision making for finding the most suitable Sentinel-1 and Sentinel-2 image for your research area. The decision is based on the Geometry of both scenes and provides Statistics about the coverage of the scenes above your research area. The algorithm which serves as a decision support for the selection of optical and passive images for data fusion purposes developed by EAGLE/UniversityofWuerzburg research team is described in more details in this blog.
 
-# **Objective **
+## **Objective **
 
 The algorithm supports the search for suitable active and passive images for data fusion. Usually a long time is spent to find suitable images for the fusion, because the temporal and spatial axis must be considered. The extension to the package 16Eagles/GetSpatialData developed for the EAGLE program course MB01 at the University of Würzburg, offers the possibility to get an overview of the geometries and relations of active and passive images in relation to the initially determined polygons of the research area.
 
@@ -14,7 +14,7 @@ The data is loaded via the API of ESA Scihub.Copernicus ( https://scihub.coperni
 
 The first step is to determine the area of investigation. Then the log-in data for the scihub.copernicus of ESA (https://scihub.copernicus.eu/) are entered. The next step determines the date at which the existing data is to be searched ("Enter start / end of timespan (YYYY-MM-DD). The data is loaded via the API of ESA [scihub.copernicus] ( https://scihub.copernicus.eu/ ) using the 16Eagles/GetSpatialData package and then filtered by our algorithm.
 
-# **Data frame output (Statistics)**
+## **Data frame output (Statistics)**
 
 The Match_Df #in ViewMatch, which will give you the following insights:
 
