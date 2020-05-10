@@ -23,13 +23,13 @@ The Match_Df in ViewMatch will give you the following insights:
 | 9    |2020-04-08 | 7     |2020-04-01 | 4       | TRUE  | 65.78 | 89.76 |77.34   |100   | 
 
 
- Tables        | Are           |
-| -------------|:------------- |
-| Date_Diff    | right-aligned | 
-| S1S2OV       | centered      |   
-| S1S2D        | are neat      |   
-| S1AD         |               |
-| S2AD         |               |
+ Columnames    | declaration           |
+| -------------|:--------------------  |
+| Date_Diff    | Time Difference (days)| 
+| S1S2OV       | centered              |   
+| S1S2D        |                       |   
+| S1AD         |                       |
+| S2AD         |                       |  
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------
