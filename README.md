@@ -33,10 +33,11 @@ S1AD =
 AIID = 
 
 
-<p align="center">
-  <img width="460" height="300" src="https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview01.PNG">
-</p>
 
+
+ViewMatch overview           | ViewMatch centred on sentinel 2 
+:-------------------------:|:-------------------------:
+![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview01.PNG)  |  ![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview02.PNG)
 
 The figure shows us how Sentinel 1 and Sentinel 2 are related to our AOI.
 
@@ -44,30 +45,13 @@ The figure shows us how Sentinel 1 and Sentinel 2 are related to our AOI.
 
 
 
-<p align="center">
-  <img width="460" height="300" src="https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview02.PNG">
-</p>
+
+Information from ESA          | ESA centred on sentinel 2 
+:-------------------------:|:-------------------------:
+![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview_esa.PNG)  |  ![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/overview_esa_micro.PNG)
 
 
 
-
-
-
-<p align="center">
-  <img width="460" height="300" src="https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview_esa.PNG">
-</p>
-
-
-
-
-
-
-
-
-
-<p align="center">
-  <img width="460" height="300" src="https://github.com/Doutrespace/FUSION2020/blob/master/Image/overview_esa_micro.PNG">
-</p>
 
 
 
