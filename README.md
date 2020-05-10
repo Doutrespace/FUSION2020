@@ -14,7 +14,7 @@ The first step is to determine the area of investigation. Then the log-in data f
 
 ## **Data frame output (Statistics)**
 
-The Match_Df #in ViewMatch, which will give you the following insights:
+The Match_Df in ViewMatch will give you the following insights:
 
 | S1_ID| S1_Date   | S2_ID |S2_Date    |DateDiff |S1S2OV |S1S2D  | S1AD  | S2AD   | AIID | 
 | ---- | -------   | ----- | --------- | -----   | ----- | ----- | ----- | ------ | ---- | 
