@@ -10,7 +10,7 @@ The data is loaded via the API of ESA Scihub.Copernicus ( https://scihub.coperni
 
 ## **Workflow**
 
-The first step is to determine the area of investigation. Then the log-in data for the scihub.copernicus of ESA (https://scihub.copernicus.eu/) are entered. The next step determines the date at which the existing data is to be searched ("Enter start / end of timespan (YYYY-MM-DD). The data is loaded via the API of ESA [scihub.copernicus] ( https://scihub.copernicus.eu/ ) using the 16Eagles/GetSpatialData package and is then guided by us through a statistical analysis.
+The first step is to determine the area of investigation. Then the log-in data for the Copernicus Skihub (https://scihub.copernicus.eu/) are entered which is using the functions within the 16/EaglesGetSpatialData packet. The next step determines the date at which the existing data is to be searched ("Enter start / end of timespan (YYYY-MM-DD). The data is loaded via the API of Copernicus Skihub ( https://scihub.copernicus.eu/ ) using the 16Eagles/GetSpatialData package and is then guided by us through a statistical analysis.
 
 ## **Data frame output (Statistics)**
 
