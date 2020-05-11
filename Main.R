@@ -34,8 +34,8 @@ ipak <- function(pkg){
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
               "mapedit","stringr","rgeos","rlang","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs")
-ipak(packages)
 
+ipak(packages)
 
 ###call set_aoi() without argument, which opens a mapedit editor:
 area <- mapview(editMap())
