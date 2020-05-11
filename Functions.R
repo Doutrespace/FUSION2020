@@ -3,6 +3,9 @@
 ########################################################################################
 Char2Pol <- function(MultiPol_Char, Id = "no", plot=FALSE){
   
+  # Assign the "MULTIPOLYGON" character to a variable and clean 
+  # it to produce a character list with all coordinates separated
+  # by space
   MP_TEST <- MultiPol_Char
   MP_TEST <- str_remove_all(MP_TEST, "[()MULTIPOLYGON]")
   MP_TEST <- strsplit(MP_TEST,",")
@@ -72,7 +75,6 @@ PolOv <- function(S1_Pol, S2_Pol, Aoi){
     overlap_all <- 0
     Status <- "FALSE"
   } else{
-    
     overlap_S1S2 <- (area(Int_S1S2)*100)/(area(S1_Pol))
     Int_All <-  raster::intersect(Int_S1S2, Aoi)
     overlap_all <- (area(Int_All)*100)/(area(Aoi))
