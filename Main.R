@@ -1,11 +1,9 @@
 ############################################################################################################
-########### Image_Decision Support Tool                      ###############################################
+########### S1&S2_Decision Support Tool                      ###############################################
 ########### Code: Nils Karges (s338495)                      ###############################################
 ########### Email: nils.karges@stud-mail.uni-wuerzburg.de    ###############################################
 ############################################################################################################
 ############################################################################################################
-#Antonio
-#Fusion_Folder <-  "C:/Users/Cowboybebop/Documents/EAGLE/0_Other/Additional_Projects/FUSION2020"
 
 ############################################################################################################
 ############################   Set your path and define your area   ########################################
@@ -13,7 +11,7 @@
 
 ### Set wd
 
-Fusion_Folder <- "D:/FUSION2020" 
+Fusion_Folder <- # set your wd
 setwd(Fusion_Folder)
 
 ### Import Functions from Function.R File
@@ -112,7 +110,7 @@ for(i in 1:length(List_Date_S2)){
   ### produces temporal index
   Temporal_Index <- which(Temporal_Min == Sentinel_2_filtered$cloudcoverpercentage[Tem_List], arr.ind=T)
   
-  ### index ###############################?
+  ### index
   
   Index <- Temporal_Index
   
@@ -146,7 +144,6 @@ Final_S1_ID <- Sentinel_1_filtered$ID
 ### Temporal ID for S2
 Final_S2_ID <- Sentinel_1_filtered$ID
 
-###
 for(i in 1:length(Sentinel_1_filtered$ingestiondate)){
   date <- as.Date(Sentinel_1_filtered$ingestiondate[i])
   Final_S2_ID[i] <-  Sentinel_2_filtered$ID[which.min(abs(date - as.Date(Sentinel_2_filtered$ingestiondate)))]
@@ -164,7 +161,6 @@ Match_df <- as.data.frame(Final_S1_ID, stringsAsFactors = FALSE)
 Match_df$S1_Date <- as.Date(Sentinel_1_filtered$ingestiondate)
 Match_df$S2_ID <- as.integer(Final_S2_ID)
 
-###
 Match_df$S2_Date <- as.Date(substr(Sentinel_2[Final_S2_ID,grep("ingestiondate", colnames(Sentinel_2))],1,10))
 
 ### setting row names
@@ -173,10 +169,9 @@ names(Match_df) <- c("S1_ID","S1_Date","S2_ID","S2_Date")
 ### set match df integer
 Match_df$S1_ID <- as.integer(Final_S1_ID)
 
-###
 Match_df$DateDiff <- abs(difftime(Match_df$S1_Date, Match_df$S2_Date , units = c("days")))
 
-###
+### Set columnames 0
 Match_df$S1S2OV <- "--"
 Match_df$S1S2D <- 0
 Match_df$S1AD <- 0
