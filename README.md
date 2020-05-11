@@ -26,7 +26,7 @@ The Match_Df in ViewMatch will give you the following insights:
  Columnames    | declaration           |
 | -------------|:--------------------  |
 | Date_Diff    | Time Difference (days)| 
-| S1S2OV       | centered              |   
+| S1S2OV       | Boolean Val of S1 & S2 Overlap|   
 | S1S2D        |                       |   
 | S1AD         |                       |
 | S2AD         |                       |  
