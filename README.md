@@ -23,13 +23,14 @@ The Match_Df in ViewMatch will give you the following insights:
 | 9    |2020-04-08 | 7     |2020-04-01 | 4       | TRUE  | 65.78 | 89.76 |77.34   |100   | 
 
 
- Columnames    | declaration           |
-| -------------|:--------------------  |
-| Date_Diff    | Time Difference (days)| 
+ Columnames    | declaration                   |
+| -------------|:--------------------          |
+| Date_Diff    | Time Difference (days)        | 
 | S1S2OV       | Boolean Val of S1 & S2 Overlap|   
-| S1S2D        |                       |   
-| S1AD         |                       |
-| S2AD         |                       |  
+| S1S2D        | % of S2 scene overlaped with  S1 scene |   
+| S1AD         | % of Aoi scene overlaped with S1 scene |
+| S2AD         | % of Aoi scene overlaped with S2 scene |  
+| All          | % of Aoi scene overlaped with S1 & S2 scenes | 
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------
