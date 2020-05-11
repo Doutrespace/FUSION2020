@@ -40,7 +40,7 @@ ViewMatch overview           | ViewMatch centred on sentinel 2
 :-------------------------:|:-------------------------:
 ![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview01.PNG)  |  ![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview02.PNG)
 
-The figure shows us how Sentinel 1 and Sentinel 2 are related to our AOI.
+The figure shows us how Sentinel 1 and Sentinel 2 are related to our AOI.On the right picture you can see an example of a scene that occurs frequently. In this situation you usually don't know if your area of interest is in the image and if so how much of it is covered.
 
 
 
@@ -59,4 +59,4 @@ Since you don't get information from ESA about how much of the data spans the re
 ## **Outlook**
 
 
-Furthermore, a cloud mask of the optical image is added to determine the percentage cloud content in the polygon of the study area. This enables the user to use the images which have been filtered out of the search by an increased cloud content. 
+Furthermore, in the near future a cloud mask of the optical image is added to determine the percentage cloud content in the polygon of the study area. This enables the user to use the images which have been filtered out of the search by an increased cloud content. 
