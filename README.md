@@ -52,7 +52,7 @@ Information from ESA          | ESA centred on sentinel 2
 ![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/Overview_esa.PNG)  |  ![](https://github.com/Doutrespace/FUSION2020/blob/master/Image/overview_esa_micro.PNG)
 
 
-Since you don't get information from ESA about how much of the data spans the research area, our tool can help you make the right decisions.
+Since you don't get information from ESA about how much of the data spans the research area, our tool can help to make the right decisions.
 
 
 
