@@ -1,5 +1,5 @@
 ############################################################################################################
-###########            S1&S2_Decision Support Tool           ###############################################
+###########            S1&S2 Decision Support Tool           ###############################################
 ########### Author                                           ###############################################
 ########### Nils Karges (s338495)                            ###############################################
 ########### nils.karges@stud-mail.uni-wuerzburg.de           ###############################################
@@ -35,7 +35,7 @@ ipak <- function(pkg){
   sapply(pkg, require, character.only = TRUE)
 }
 
-### usage
+### install libaries
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","rSNAP","processx","dplyr","stringi",
               "installr","lubridate","rgdal","data.table","devtools","svDialogs","gdalUtils","Rcpp", "mapview",
               "mapedit","stringr","rgeos","rlang","officer","shiny","flextable","maps","mapproj","ggplot2","Orcs")
@@ -45,6 +45,7 @@ ipak(packages)
 ###call set_aoi() without argument, which opens a mapedit editor:
 area <- mapview(editMap())
 area <- area@object[[1]][[1]][[1]]
+
 ### polygonize the area and define crs
 area <- Polygon(area)
 area <- Polygons(c(area), "area")
@@ -183,7 +184,7 @@ Match_df$S1AD <- 0
 Match_df$S2AD <- 0
 Match_df$AllD <- 0
 
-### INCEPTION
+### Inception
 for(i in 1: length(Match_df$S1_ID)){
   
   TempData <- PolOv(Char2Pol(Sentinel_1$footprint[Match_df$S1_ID[i] == row.names(Sentinel_1)],),
